@@ -13,35 +13,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
       with:
         elixir-version: '1.15'
         otp-version: '26'
-    
+
     - name: Restore dependencies cache
       uses: actions/cache@v3
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-
-    
+
     - name: Install dependencies
       run: mix deps.get
-    
+
     - name: Check formatting
       run: mix format --check-formatted
-    
+
     - name: Compile
       run: mix compile --warnings-as-errors
-    
+
     - name: Run tests
       run: mix test
-    
+
     - name: Build escript
       run: mix escript.build
-    
+
     - name: Verify escript was created
       run: |
         if [ ! -f nerves_burner ]; then
