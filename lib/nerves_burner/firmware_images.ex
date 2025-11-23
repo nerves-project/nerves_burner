@@ -104,6 +104,28 @@ defmodule NervesBurner.FirmwareImages do
              """
            }
          }
+       }},
+      {"Nerves Web Kiosk Demo",
+       %{
+         repo: "nerves-web-kiosk/kiosk_demo",
+         description: "Kiosk demo using an embedded web browser and Phoenix LiveView",
+         long_description: """
+         This firmware works on the Raspberry Pi 4 and 5. You'll also need either the
+         Raspberry Pi Touch Display 2 or an HDMI display. If using an HDMI display, connect
+         a mouse to use the UI. Some HDMI monitors with USB touchscreens work.
+         """,
+         url: "https://github.com/nerves-web-kiosk/kiosk_demo",
+         targets: [
+           "rpi4",
+           "rpi5"
+         ],
+         fw_asset_pattern: fn target -> "kiosk_demo_#{target}.fw" end,
+         image_asset_pattern: fn target -> "kiosk_demo_#{target}.img.gz" end,
+         next_steps: """
+         For instructions on getting started, please visit:
+         https://github.com/nerves-web-kiosk/kiosk_demo#readme
+         """,
+         overrides: %{}
        }}
     ]
   end
