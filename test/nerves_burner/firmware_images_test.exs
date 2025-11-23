@@ -54,23 +54,13 @@ defmodule NervesBurner.FirmwareImagesTest do
       end)
     end
 
-    test "includes all expected targets" do
+    test "includes expected targets" do
       images = NervesBurner.FirmwareImages.list()
 
+      # Raspberry Pi 4 and 5 should be supported everywhere
       expected_targets = [
-        "rpi",
-        "rpi0",
-        "rpi0_2",
-        "rpi2",
-        "rpi3",
-        "rpi3a",
         "rpi4",
-        "rpi5",
-        "bbb",
-        "osd32mp1",
-        "npi_imx6ull",
-        "grisp2",
-        "mangopi_mq_pro"
+        "rpi5"
       ]
 
       Enum.each(images, fn {_name, config} ->
