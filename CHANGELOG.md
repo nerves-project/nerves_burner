@@ -7,6 +7,11 @@
 
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.2 - 2025-11-23
+
+* Changes
+  * Add Nerves Web Kiosk demo images
+
 ## v0.2.1 - 2025-10-18
 
 * Changes
