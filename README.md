@@ -13,6 +13,7 @@ A user-friendly tool for downloading and writing pre-built Nerves firmware image
 
 * [Circuits Quickstart](https://github.com/elixir-circuits/circuits_quickstart) - Simple examples for GPIO, I2C, SPI and more
 * [Nerves Livebook](https://github.com/nerves-livebook/nerves_livebook) - Interactive notebooks for learning Elixir and Nerves
+* [Nerves Kiosk Demo](https://github.com/nerves-web-kiosk/kiosk_demo) - Demonstration of using Phoenix LiveView with an embedded fullscreen web browser
 
 ## Installation
 
