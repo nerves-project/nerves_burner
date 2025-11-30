@@ -7,8 +7,6 @@ defmodule NervesBurner.Fwup do
   Interface to the fwup tool for burning firmware to MicroSD cards.
   """
 
-  alias NervesBurner.InteractiveShell
-
   @doc """
   Checks if fwup is available on the system.
   """
@@ -55,10 +53,11 @@ defmodule NervesBurner.Fwup do
   end
 
   @doc """
-  Burns firmware to the specified device.
+  Burns firmware to the specified device
+
   Optionally accepts WiFi configuration to pass as environment variables.
   """
-  @spec burn(String.t(), String.t(), map()) :: :ok
+  @spec burn(String.t(), String.t(), map()) :: :ok | {:error, String.t()}
   def burn(firmware_path, device_path, wifi_config \\ %{}) do
     fwup_args = ["-d", device_path, firmware_path]
 
@@ -71,7 +70,10 @@ defmodule NervesBurner.Fwup do
 
     env = build_wifi_env(wifi_config)
 
-    InteractiveShell.shell(cmd, args, env: env)
+    case InteractiveCmd.cmd(cmd, args, env: env) do
+      {_, 0} -> :ok
+      {_, exit_code} -> {:error, "Failed to burn firmware: fwup error: #{exit_code}"}
+    end
   end
 
   defp build_wifi_env(wifi_config) do
