@@ -23,6 +23,7 @@ defmodule NervesBurner.MixProject do
 
   defp deps do
     [
+      {:interactive_cmd, "~> 0.1.2"},
       {:req, "~> 0.5"},
       {:progress_bar, "~> 3.0"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},

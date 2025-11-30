@@ -308,13 +308,7 @@ defmodule NervesBurner.CLI do
 
     Output.warning("This may take several minutes. Please do not remove the card.\n")
 
-    case NervesBurner.Fwup.burn(firmware_path, device_path, wifi_config) do
-      :ok ->
-        :ok
-
-      {:error, reason} ->
-        {:error, "Failed to burn firmware: #{reason}"}
-    end
+    NervesBurner.Fwup.burn(firmware_path, device_path, wifi_config)
   end
 
   defp get_user_choice(prompt, range) do
