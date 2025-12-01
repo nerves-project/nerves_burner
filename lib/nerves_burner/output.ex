@@ -76,6 +76,8 @@ defmodule NervesBurner.Output do
     if secondary_text do
       IO.puts(IO.ANSI.format(["     ", :faint, secondary_text, :reset]))
     end
+
+    :ok
   end
 
   @doc """
