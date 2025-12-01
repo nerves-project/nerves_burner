@@ -21,8 +21,7 @@ defmodule NervesBurner.CLI do
     with {:ok, image_config} <- select_firmware_image(),
          {:ok, target} <- select_target(image_config) do
       # Check if this target uses image assets
-      target_override =
-        NervesBurner.FirmwareImages.get_target_override(image_config, target)
+      target_override = NervesBurner.FirmwareImages.get_target_override(image_config, target)
 
       uses_image_asset = target_override && target_override.use_image_asset
 
@@ -42,8 +41,7 @@ defmodule NervesBurner.CLI do
           # Full workflow with fwup
           with {:ok, wifi_config} <- get_wifi_credentials(),
                {:ok, firmware_path} <- download_firmware(image_config, target),
-               {:ok, device} <- select_device(),
-               :ok <- burn_firmware(firmware_path, device, wifi_config) do
+               :ok <- select_device_and_burn(firmware_path, wifi_config) do
             Output.success("\n✓ Firmware burned successfully!\n")
             Output.info("You can now safely remove the MicroSD card.\n")
             print_next_steps(image_config, target)
@@ -296,6 +294,26 @@ defmodule NervesBurner.CLI do
       _ ->
         Output.warning("\nDevice selection cancelled.")
         select_device()
+    end
+  end
+
+  defp select_device_and_burn(firmware_path, wifi_config) do
+    with {:ok, device} <- select_device() do
+      case burn_firmware(firmware_path, device, wifi_config) do
+        :ok ->
+          :ok
+
+        {:error, reason} ->
+          Output.error("\n✗ Error: #{reason}\n")
+
+          case get_user_input("\nWould you like to try again? (y/n): ") do
+            input when input in ["y", "Y", "yes", "Yes", "YES"] ->
+              select_device_and_burn(firmware_path, wifi_config)
+
+            _ ->
+              {:error, :cancelled}
+          end
+      end
     end
   end
 
