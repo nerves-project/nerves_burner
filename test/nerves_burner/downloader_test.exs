@@ -234,12 +234,9 @@ defmodule NervesBurner.DownloaderTest do
     end
 
     test "computes consistent hash", %{test_file: test_file} do
-      hash1 = NervesBurner.Downloader.compute_sha256(test_file)
-      hash2 = NervesBurner.Downloader.compute_sha256(test_file)
+      hash = NervesBurner.Downloader.compute_sha256(test_file)
 
-      assert hash1 == hash2
-      assert is_binary(hash1)
-      assert String.length(hash1) == 64
+      assert hash == "e25dd806d495b413931f4eea50b677a7a5c02d00460924661283f211a37f7e7f"
     end
 
     test "different content produces different hash" do

@@ -425,6 +425,7 @@ defmodule NervesBurner.Downloader do
   @doc false
   @spec compute_sha256(String.t()) :: String.t()
   def compute_sha256(file_path) do
+    # Note that File.stream uses Elixir 1.15 API
     file_path
     |> File.stream!([], 2048)
     |> Enum.reduce(:crypto.hash_init(:sha256), fn chunk, acc ->
