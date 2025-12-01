@@ -446,7 +446,6 @@ defmodule NervesBurner.Downloader do
     hash = compute_sha256(file_path)
     hash_file = file_path <> ".sha256"
     File.write(hash_file, hash)
-    :ok
   rescue
     error ->
       {:error, error}
