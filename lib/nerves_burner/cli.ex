@@ -232,7 +232,7 @@ defmodule NervesBurner.CLI do
         Output.warning("\nNo MicroSD cards detected.")
 
         case get_user_input("\nWould you like to rescan? (y/n): ") do
-          input when input in ["y", "Y", "yes", "Yes"] ->
+          input when input in ["y", "Y", "yes", "Yes", "YES"] ->
             select_device()
 
           _ ->
