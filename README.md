@@ -5,6 +5,9 @@
 
 # Nerves Burner
 
+[![CI](https://github.com/nerves-project/nerves_burner/actions/workflows/ci.yml/badge.svg)](https://github.com/nerves-project/nerves_burner/actions/workflows/ci.yml)
+[![REUSE status](https://api.reuse.software/badge/github.com/nerves-project/nerves_burner)](https://api.reuse.software/info/github.com/nerves-project/nerves_burner)
+
 A user-friendly tool for downloading and writing pre-built Nerves firmware images to MicroSD cards.
 
 ![Nerves Burner Demo](demo.gif)
