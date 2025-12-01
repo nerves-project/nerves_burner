@@ -10,7 +10,8 @@ defmodule NervesBurner.FirmwareImages do
   @doc """
   Lists all available firmware images with their configurations.
   """
-  def list do
+  @spec list() :: [{String.t(), map()}]
+  def list() do
     [
       {"Circuits Quickstart",
        %{
@@ -164,6 +165,7 @@ defmodule NervesBurner.FirmwareImages do
   Checks for target-specific next steps in overrides first, then falls back to default.
   Returns nil if no next steps are defined.
   """
+  @spec next_steps(map(), String.t()) :: String.t() | nil
   def next_steps(image_config, target) do
     # Check for target overrides first
     case get_target_override(image_config, target) do
@@ -179,6 +181,7 @@ defmodule NervesBurner.FirmwareImages do
   @doc """
   Returns the target-specific override configuration if it exists.
   """
+  @spec get_target_override(map(), String.t()) :: map() | nil
   def get_target_override(image_config, target) do
     case Map.get(image_config, :overrides) do
       nil -> nil

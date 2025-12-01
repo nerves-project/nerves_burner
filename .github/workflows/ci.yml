@@ -49,3 +49,6 @@ jobs:
           exit 1
         fi
         echo "✓ Escript built successfully"
+
+    - name: Credo
+      run: mix credo -a --strict

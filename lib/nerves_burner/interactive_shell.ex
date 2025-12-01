@@ -3,6 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 defmodule NervesBurner.InteractiveShell do
+  @moduledoc """
+  Interactive shell utilities for running commands that take over the terminal.
+  """
+
   @doc """
   Start an interactive shell
 

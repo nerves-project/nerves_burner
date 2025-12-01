@@ -18,7 +18,8 @@ defmodule NervesBurner.VersionChecker do
 
   Errors are printed as warnings and the upgrade is skipped.
   """
-  def check_and_prompt_update do
+  @spec check_and_prompt_update() :: :ok
+  def check_and_prompt_update() do
     case check_for_update() do
       {:update_available, new_version, download_url} ->
         prompt_and_download_update(new_version, download_url)
@@ -32,7 +33,7 @@ defmodule NervesBurner.VersionChecker do
     end
   end
 
-  defp check_for_update do
+  defp check_for_update() do
     url = "https://api.github.com/repos/#{@repo}/releases/latest"
 
     case Req.get(url, headers: github_headers()) do
@@ -176,16 +177,14 @@ defmodule NervesBurner.VersionChecker do
     end
   end
 
-  defp get_current_executable_path do
+  defp get_current_executable_path() do
     # When running as an escript, :escript.script_name() gives us the path
-    try do
-      script_name = :escript.script_name()
-      path = List.to_string(script_name)
-      {:ok, path}
-    rescue
-      _ ->
-        {:error, "Not running as escript"}
-    end
+    script_name = :escript.script_name()
+    path = List.to_string(script_name)
+    {:ok, path}
+  rescue
+    _ ->
+      {:error, "Not running as escript"}
   end
 
   defp download_file(url, dest_path) do
@@ -227,14 +226,14 @@ defmodule NervesBurner.VersionChecker do
   end
 
   # Get the current version from the application spec
-  defp current_version do
+  defp current_version() do
     :nerves_burner
     |> Application.spec(:vsn)
     |> to_string()
   end
 
   # Build headers for GitHub API requests, including auth token if available
-  defp github_headers do
+  defp github_headers() do
     base_headers = [{"accept", "application/vnd.github+json"}]
 
     token = System.get_env("GITHUB_TOKEN") || System.get_env("GITHUB_API_TOKEN")

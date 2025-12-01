@@ -9,6 +9,7 @@ defmodule NervesBurner.CLI do
 
   alias NervesBurner.Output
 
+  @spec main([String.t()]) :: no_return()
   def main(_args) do
     print_banner()
 
@@ -89,7 +90,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp print_banner do
+  defp print_banner() do
     logo = """
     \e[38;5;24m████▄▄    \e[38;5;74m▐███
     \e[38;5;24m█▌  ▀▀██▄▄  \e[38;5;74m▐█
@@ -103,7 +104,7 @@ defmodule NervesBurner.CLI do
     IO.puts(IO.ANSI.format([:faint, "Nerves Burner v#{version}\n", :reset]))
   end
 
-  defp select_firmware_image do
+  defp select_firmware_image() do
     Output.section("Select a firmware image:\n")
 
     images = NervesBurner.FirmwareImages.list()
@@ -181,7 +182,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp get_wifi_credentials do
+  defp get_wifi_credentials() do
     Output.section("\nWould you like to configure WiFi credentials?")
 
     case get_user_input("Configure WiFi? (y/n): ") do
@@ -193,7 +194,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp get_wifi_details do
+  defp get_wifi_details() do
     ssid = get_user_input("\nEnter WiFi SSID: ")
 
     if ssid == "" do
@@ -224,7 +225,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp select_device do
+  defp select_device() do
     case scan_devices() do
       {:ok, [_ | _] = devices} ->
         choose_device(devices)
@@ -245,7 +246,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp scan_devices do
+  defp scan_devices() do
     Output.info("\nScanning for MicroSD cards...")
 
     case NervesBurner.Fwup.scan_devices() do
@@ -480,7 +481,7 @@ defmodule NervesBurner.CLI do
     end
   end
 
-  defp get_version do
+  defp get_version() do
     :nerves_burner
     |> Application.spec(:vsn)
     |> to_string()

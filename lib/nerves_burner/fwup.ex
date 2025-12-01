@@ -12,7 +12,8 @@ defmodule NervesBurner.Fwup do
   @doc """
   Checks if fwup is available on the system.
   """
-  def available? do
+  @spec available?() :: boolean()
+  def available?() do
     case System.cmd("fwup", ["--version"], stderr_to_stdout: true) do
       {_, 0} -> true
       _ -> false
@@ -24,7 +25,8 @@ defmodule NervesBurner.Fwup do
   @doc """
   Scans for available devices (MicroSD cards).
   """
-  def scan_devices do
+  @spec scan_devices() :: {:ok, [map()]} | {:error, String.t()}
+  def scan_devices() do
     case System.cmd("fwup", ["--detect"], stderr_to_stdout: true) do
       {output, 0} ->
         devices =
@@ -56,6 +58,7 @@ defmodule NervesBurner.Fwup do
   Burns firmware to the specified device.
   Optionally accepts WiFi configuration to pass as environment variables.
   """
+  @spec burn(String.t(), String.t(), map()) :: :ok
   def burn(firmware_path, device_path, wifi_config \\ %{}) do
     fwup_args = ["-d", device_path, firmware_path]
 

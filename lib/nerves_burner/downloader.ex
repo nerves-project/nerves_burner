@@ -14,6 +14,7 @@ defmodule NervesBurner.Downloader do
   If fwup is available, downloads .fw file. Otherwise, downloads alternative format (zip or img.gz).
   Some targets may require image assets regardless of fwup availability (via overrides).
   """
+  @spec download(map(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
   def download(image_config, target) do
     fwup_available = NervesBurner.Fwup.available?()
     target_override = NervesBurner.FirmwareImages.get_target_override(image_config, target)
@@ -35,9 +36,8 @@ defmodule NervesBurner.Downloader do
              asset_name,
              fwup_available,
              use_image_asset
-           ),
-         {:ok, firmware_path} <- download_file(asset_info, target) do
-      {:ok, firmware_path}
+           ) do
+      download_file(asset_info, target)
     end
   end
 
@@ -316,22 +316,20 @@ defmodule NervesBurner.Downloader do
   end
 
   @doc false
-  def get_cache_dir do
+  @spec get_cache_dir() :: String.t()
+  def get_cache_dir() do
     :filename.basedir(:user_cache, ~c"nerves_burner")
     |> List.to_string()
   end
 
   @doc false
+  @spec check_cached_file(String.t(), map()) :: :valid | :invalid | :not_found
   def check_cached_file(cache_path, asset_info) do
     if File.exists?(cache_path) do
       hash_file = cache_path <> ".sha256"
 
       # If there's no local hash, treat as failed download and redownload
-      if not File.exists?(hash_file) do
-        IO.puts("Cached firmware has no hash file, removing and re-downloading...")
-        File.rm(cache_path)
-        :not_found
-      else
+      if File.exists?(hash_file) do
         # Try to fetch the hash from GitHub to check if firmware has been updated
         case fetch_hash_from_github(asset_info) do
           {:ok, server_hash} ->
@@ -363,6 +361,10 @@ defmodule NervesBurner.Downloader do
               {:error, _} -> :invalid
             end
         end
+      else
+        IO.puts("Cached firmware has no hash file, removing and re-downloading...")
+        File.rm(cache_path)
+        :not_found
       end
     else
       :not_found
@@ -370,11 +372,11 @@ defmodule NervesBurner.Downloader do
   end
 
   @doc false
+  @spec verify_file(String.t(), map()) :: :ok | {:error, String.t()}
   def verify_file(file_path, asset_info) do
     # Verify file size if available
-    with :ok <- verify_size(file_path, asset_info.size),
-         :ok <- verify_hash(file_path, asset_info) do
-      :ok
+    with :ok <- verify_size(file_path, asset_info.size) do
+      verify_hash(file_path, asset_info)
     end
   end
 
@@ -421,6 +423,7 @@ defmodule NervesBurner.Downloader do
   end
 
   @doc false
+  @spec compute_sha256(String.t()) :: String.t()
   def compute_sha256(file_path) do
     file_path
     |> File.stream!([], 2048)
@@ -432,6 +435,7 @@ defmodule NervesBurner.Downloader do
   end
 
   @doc false
+  @spec store_hash(String.t()) :: :ok | {:error, File.posix()}
   def store_hash(file_path) do
     hash = compute_sha256(file_path)
     hash_file = file_path <> ".sha256"
@@ -439,15 +443,13 @@ defmodule NervesBurner.Downloader do
   end
 
   defp compute_and_store_hash(file_path) do
-    try do
-      hash = compute_sha256(file_path)
-      hash_file = file_path <> ".sha256"
-      File.write(hash_file, hash)
-      :ok
-    rescue
-      error ->
-        {:error, error}
-    end
+    hash = compute_sha256(file_path)
+    hash_file = file_path <> ".sha256"
+    File.write(hash_file, hash)
+    :ok
+  rescue
+    error ->
+      {:error, error}
   end
 
   # Fetch hash from GitHub without storing it (for verification of cached files)
@@ -537,7 +539,7 @@ defmodule NervesBurner.Downloader do
   end
 
   # Build headers for GitHub API requests, including auth token if available
-  defp github_headers do
+  defp github_headers() do
     base_headers = [{"accept", "application/vnd.github+json"}]
 
     token = System.get_env("GITHUB_TOKEN") || System.get_env("GITHUB_API_TOKEN")
