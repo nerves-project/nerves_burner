@@ -7,6 +7,12 @@
 
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.3 - 2025-12-01
+
+* Changes
+  * Detect when a failure happens when writing a MicroSD card and ask about
+    retrying
+
 ## v0.2.2 - 2025-11-23
 
 * Changes
