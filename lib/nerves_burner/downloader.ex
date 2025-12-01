@@ -218,7 +218,7 @@ defmodule NervesBurner.Downloader do
                     {:ok, dest_path}
 
                   {:error, reason} ->
-                    File.rm(dest_path)
+                    _ = File.rm(dest_path)
                     {:error, "Hash verification failed: #{reason}"}
                 end
 
@@ -246,18 +246,18 @@ defmodule NervesBurner.Downloader do
                         )
 
                         IO.puts("Starting new download...")
-                        File.rm(dest_path)
+                        _ = File.rm(dest_path)
                         do_download(url, dest_path, asset_info)
                     end
 
                   _ ->
-                    File.rm(dest_path)
+                    _ = File.rm(dest_path)
                     {:error, "Download cancelled by user"}
                 end
             end
 
           {:error, reason} ->
-            File.rm(dest_path)
+            _ = File.rm(dest_path)
             {:error, "Downloaded file verification failed: #{reason}"}
         end
 
@@ -309,7 +309,7 @@ defmodule NervesBurner.Downloader do
       end)
     end
 
-    File.close(io)
+    _ = File.close(io)
     :ok
   rescue
     reason -> {:error, reason}
@@ -363,7 +363,7 @@ defmodule NervesBurner.Downloader do
         end
       else
         IO.puts("Cached firmware has no hash file, removing and re-downloading...")
-        File.rm(cache_path)
+        _ = File.rm(cache_path)
         :not_found
       end
     else
