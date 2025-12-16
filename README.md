@@ -81,6 +81,15 @@ Downloaded firmware is cached in OS-appropriate directories:
 - **macOS**: `~/Library/Caches/nerves_burner`
 - **Windows**: Local app data cache
 
+## Troubleshooting
+
+### Writing to the MicroSD card times out on macOS
+
+Nerves Burner needs to ask macOS for elevated permissions to write the MicroSD
+card. Sometimes the dialog box that asks for permission doesn't show up where
+it's easy to see. It will eventually timeout when permission isn't granted.
+That's the error message. It seems like trying again always works.
+
 ## Contributing
 
 Contributions are welcome!
