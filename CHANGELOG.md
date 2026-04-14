@@ -7,6 +7,11 @@
 
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.4 - 2026-04-14
+
+* Changes
+  * Add note about RPi4 and RPi5 EEPROM firmware
+
 ## v0.2.3 - 2025-12-01
 
 * Changes
