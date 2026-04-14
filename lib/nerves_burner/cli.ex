@@ -20,6 +20,8 @@ defmodule NervesBurner.CLI do
 
     with {:ok, image_config} <- select_firmware_image(),
          {:ok, target} <- select_target(image_config) do
+      maybe_print_eeprom_note(target)
+
       # Check if this target uses image assets
       target_override = NervesBurner.FirmwareImages.get_target_override(image_config, target)
 
@@ -481,6 +483,19 @@ defmodule NervesBurner.CLI do
 
     print_next_steps(image_config, target)
   end
+
+  defp maybe_print_eeprom_note(target) when target in ["rpi4", "rpi5"] do
+    Output.warning("""
+
+    Important: If this is your first time using Nerves on this board and this
+    image doesn't boot, your Raspberry Pi might have an old EEPROM firmware.
+    Firmwares older than 2024 can be problematic. The EEPROM can either be updated
+    using Raspberry Pi OS or by running the "Bootloader" image created by the
+    Raspberry Pi Imager.  Find the image under the "Misc utility images" menu.
+    """)
+  end
+
+  defp maybe_print_eeprom_note(_target), do: :ok
 
   defp print_next_steps(image_config, target) do
     case NervesBurner.FirmwareImages.next_steps(image_config, target) do
