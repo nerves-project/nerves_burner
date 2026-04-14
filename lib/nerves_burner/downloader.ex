@@ -340,8 +340,8 @@ defmodule NervesBurner.Downloader do
 
               {:error, :hash_mismatch} ->
                 IO.puts("Server has a different firmware version, re-downloading...")
-                File.rm(cache_path)
-                File.rm(hash_file)
+                _ = File.rm(cache_path)
+                _ = File.rm(hash_file)
                 :not_found
 
               {:error, _reason} ->
@@ -530,7 +530,7 @@ defmodule NervesBurner.Downloader do
     case fetch_hash_from_github(asset_info) do
       {:ok, hash} ->
         hash_file = file_path <> ".sha256"
-        File.write(hash_file, hash)
+        _ = File.write(hash_file, hash)
         :ok
 
       {:error, reason} ->
