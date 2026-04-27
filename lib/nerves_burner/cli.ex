@@ -215,7 +215,17 @@ defmodule NervesBurner.CLI do
   defp download_firmware(image_config, target) do
     Output.section("\nDownloading firmware...")
 
-    case NervesBurner.Downloader.download(image_config, target) do
+    opts = [
+      on_progress: fn
+        0, _current ->
+          ProgressBar.render_indeterminate(text: "Downloading…")
+
+        total, current ->
+          ProgressBar.render(current, total, suffix: :bytes)
+      end
+    ]
+
+    case NervesBurner.Downloader.download(image_config, target, opts) do
       {:ok, path} ->
         Output.labeled("✓ Download complete: ", "#{path}\n", :green)
         {:ok, path}

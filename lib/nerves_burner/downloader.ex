@@ -11,11 +11,17 @@ defmodule NervesBurner.Downloader do
 
   @doc """
   Downloads firmware for the specified image config and target.
+
   If fwup is available, downloads .fw file. Otherwise, downloads alternative format (zip or img.gz).
   Some targets may require image assets regardless of fwup availability (via overrides).
+
+  ## Options
+
+    * `:on_progress` - an optional callback `(total, current -> any())` called during download.
+      `total` may be 0 if the content length is unknown.
   """
-  @spec download(map(), String.t()) :: {:ok, String.t()} | {:error, String.t()}
-  def download(image_config, target) do
+  @spec download(map(), String.t(), keyword()) :: {:ok, String.t()} | {:error, String.t()}
+  def download(image_config, target, opts \\ []) do
     fwup_available = NervesBurner.Fwup.available?()
     target_override = NervesBurner.FirmwareImages.get_target_override(image_config, target)
 
@@ -37,7 +43,7 @@ defmodule NervesBurner.Downloader do
              fwup_available,
              use_image_asset
            ) do
-      download_file(asset_info, target)
+      download_file(asset_info, target, opts)
     end
   end
 
@@ -176,7 +182,7 @@ defmodule NervesBurner.Downloader do
     end
   end
 
-  defp download_file(asset_info, _target) do
+  defp download_file(asset_info, _target, opts) do
     url = asset_info.url
     cache_dir = get_cache_dir()
     cache_path = Path.join(cache_dir, asset_info.name)
@@ -189,20 +195,20 @@ defmodule NervesBurner.Downloader do
 
       :invalid ->
         IO.puts("Cached file invalid, re-downloading...")
-        do_download(url, cache_path, asset_info)
+        do_download(url, cache_path, asset_info, opts)
 
       :not_found ->
-        do_download(url, cache_path, asset_info)
+        do_download(url, cache_path, asset_info, opts)
     end
   end
 
-  defp do_download(url, dest_path, asset_info) do
+  defp do_download(url, dest_path, asset_info, opts) do
     # Ensure cache directory exists
     dest_path |> Path.dirname() |> File.mkdir_p!()
 
     Output.labeled("Downloading from: ", "#{url}")
 
-    case do_download_with_progress(url, dest_path) do
+    case do_download_with_progress(url, dest_path, opts) do
       :ok ->
         # Verify the downloaded file size
         case verify_size(dest_path, asset_info.size) do
@@ -247,7 +253,7 @@ defmodule NervesBurner.Downloader do
 
                         IO.puts("Starting new download...")
                         _ = File.rm(dest_path)
-                        do_download(url, dest_path, asset_info)
+                        do_download(url, dest_path, asset_info, opts)
                     end
 
                   _ ->
@@ -266,7 +272,7 @@ defmodule NervesBurner.Downloader do
     end
   end
 
-  defp do_download_with_progress(url, path) do
+  defp do_download_with_progress(url, path, opts) do
     # Try to get total size for a proper percentage bar
     total =
       case Req.head!(url: url).headers |> Map.get("content-length") do
@@ -293,21 +299,14 @@ defmodule NervesBurner.Downloader do
 
         res = Req.Response.put_private(res, :downloaded, downloaded)
 
-        if total > 0 do
-          ProgressBar.render(downloaded, total, suffix: :bytes)
+        if on_progress = opts[:on_progress] do
+          on_progress.(total, downloaded)
         end
 
         {:cont, {req, res}}
     end
 
-    if total > 0 do
-      Req.get!(url: url, raw: true, into: fun)
-    else
-      # No Content-Length? Show an indeterminate animation while downloading.
-      ProgressBar.render_indeterminate([text: "Downloading…"], fn ->
-        Req.get!(url: url, raw: true, into: fun)
-      end)
-    end
+    Req.get!(url: url, raw: true, into: fun)
 
     _ = File.close(io)
     :ok
