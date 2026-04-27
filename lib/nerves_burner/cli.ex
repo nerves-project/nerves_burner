@@ -215,15 +215,7 @@ defmodule NervesBurner.CLI do
   defp download_firmware(image_config, target) do
     Output.section("\nDownloading firmware...")
 
-    opts = [
-      on_progress: fn
-        0, _current ->
-          ProgressBar.render_indeterminate(text: "Downloading…")
-
-        total, current ->
-          ProgressBar.render(current, total, suffix: :bytes)
-      end
-    ]
+    opts = [on_progress: &handle_progress/2]
 
     case NervesBurner.Downloader.download(image_config, target, opts) do
       {:ok, path} ->
@@ -233,6 +225,14 @@ defmodule NervesBurner.CLI do
       {:error, reason} ->
         {:error, "Download failed: #{reason}"}
     end
+  end
+
+  defp handle_progress(0, _current) do
+    ProgressBar.render_indeterminate(text: "Downloading…")
+  end
+
+  defp handle_progress(total, current) do
+    ProgressBar.render(current, total, suffix: :bytes)
   end
 
   defp select_device() do
