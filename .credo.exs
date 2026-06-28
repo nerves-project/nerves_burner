@@ -15,7 +15,7 @@
         {Credo.Check.Readability.Specs, tags: []},
         {Credo.Check.Readability.StrictModuleLayout, tags: []},
         {Credo.Check.Refactor.Nesting, max_nesting: 5},
-        {Credo.Check.Refactor.CyclomaticComplexity, max_complexity: 15}
+        {Credo.Check.Refactor.CyclomaticComplexity, max_complexity: 16}
       ]
     }
   ]

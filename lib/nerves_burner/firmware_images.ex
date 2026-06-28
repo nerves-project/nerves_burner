@@ -38,9 +38,7 @@ defmodule NervesBurner.FirmwareImages do
            "rpi4",
            "rpi5",
            "bbb",
-           "osd32mp1",
-           "npi_imx6ull",
-           "grisp2",
+           "trellis",
            "mangopi_mq_pro"
          ],
          fw_asset_pattern: fn target -> "circuits_quickstart_#{target}.fw" end,
@@ -85,9 +83,7 @@ defmodule NervesBurner.FirmwareImages do
            "rpi4",
            "rpi5",
            "bbb",
-           "osd32mp1",
-           "npi_imx6ull",
-           "grisp2",
+           "trellis",
            "mangopi_mq_pro"
          ],
          fw_asset_pattern: fn target -> "nerves_livebook_#{target}.fw" end,
@@ -154,6 +150,7 @@ defmodule NervesBurner.FirmwareImages do
       "osd32mp1" -> "OSD32MP1 (osd32mp1)"
       "npi_imx6ull" -> "NPI i.MX6 ULL (npi_imx6ull)"
       "grisp2" -> "GRiSP 2 (grisp2)"
+      "trellis" -> "Nerves Starter Kit and Goatmire Badge (trellis)"
       "mangopi_mq_pro" -> "MangoPi MQ Pro (mangopi_mq_pro)"
       _ -> target
     end
