@@ -4,7 +4,7 @@ defmodule NervesBurner.MixProject do
   def project do
     [
       app: :nerves_burner,
-      version: "0.2.4",
+      version: "0.2.5",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

@@ -7,6 +7,12 @@
 
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.5 - 2026-08-26
+
+* Changes
+  * Add Trellis. Remove GRiSP2 and iMX6ULL boards due to lack of updates.
+  * Add download progress reporting callback for Nerves Desktop
+
 ## v0.2.4 - 2026-04-14
 
 * Changes
